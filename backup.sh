@@ -34,14 +34,15 @@ fi
 
 # Compress the created folder
 
-zip -r ${DB_BACKUP_PATH}${TODAY}.zip ${DB_BACKUP_PATH}${TODAY}
+echo "Compressing backup folder..."
+tar -czf ${DB_BACKUP_PATH}${TODAY}.tar.gz -C ${DB_BACKUP_PATH} ${TODAY}
 rm -rf ${DB_BACKUP_PATH}${TODAY}
 
 # Upload file to FTP server
 HOST=${FTP_HOST}
 USER=${FTP_USER}
 PASSWD=${FTP_PASSWORD}
-FILE=${DB_BACKUP_PATH}${TODAY}.zip
+FILE=${DB_BACKUP_PATH}${TODAY}.tar.gz
 
 ftp -n $HOST <<END_SCRIPT
 quote USER $USER
@@ -49,7 +50,7 @@ quote PASS $PASSWD
 binary
 passive
 cd backups
-put $FILE $TODAY.zip
+put $FILE $TODAY.tar.gz
 quit
 END_SCRIPT
 
