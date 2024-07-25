@@ -13,6 +13,14 @@ mkdir -p ${DB_BACKUP_PATH}/${TODAY}
 echo "Running backup..."
 mysqldump --host=${MYSQL_HOST} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} ${DATABASE_NAMES} > ${DB_BACKUP_PATH}/${TODAY}/${DATABASE_NAMES}.sql
 
+# Check if the backup file was created
+if [ ! -f ${DB_BACKUP_PATH}/${TODAY}/${DATABASE_NAMES}.sql ]; then
+  echo "Backup failed: ${DB_BACKUP_PATH}/${TODAY}/${DATABASE_NAMES}.sql not found."
+  exit 1
+fi
+
+echo "Backup successful: ${DB_BACKUP_PATH}/${TODAY}/${DATABASE_NAMES}.sql created."
+
 ######## Remove backups older than ${BACKUP_RETAIN_DAYS} days ########
 
 DBDELDATE=$(date +"%d-%b-%Y" --date="${BACKUP_RETAIN_DAYS} days ago")
